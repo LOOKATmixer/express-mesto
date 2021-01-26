@@ -14,8 +14,12 @@ const getUsers = (req, res) => {
 
 const getUser = (req, res) => {
   User.findById(req.params.id)
-    .orFail(new Error("Не найдено"))
-    .then((user) => res.send({ user }))
+    .then((user) => {
+      if (!user) {
+        return res.status(404).send({ message: "Нет пользователя с таким id" });
+      }
+      return res.status(200).send(user);
+    })
     .catch((err) => {
       if (err.name === "CastError") {
         res.status(400).send({ message: "Введён неправильный id" });
@@ -39,7 +43,6 @@ const createUser = (req, res) => {
 
 const updateProfile = (req, res) => {
   const id = req.user._id;
-  res.setHeader("Content-Type", "application/json");
 
   User.findByIdAndUpdate(id, { name: req.body.name, about: req.body.about })
     .then((user) => res.status(200).send({ data: user }))
@@ -53,7 +56,6 @@ const updateProfile = (req, res) => {
 
 const updateAvatar = (req, res) => {
   const id = req.user._id;
-  res.setHeader("Content-Type", "application/json");
 
   User.findByIdAndUpdate(id, {
     avatar: req.body.avatar,
