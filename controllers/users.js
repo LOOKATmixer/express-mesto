@@ -51,8 +51,7 @@ const updateProfile = (req, res) => {
   )
     .then((user) => res.status(200).send({ data: user }))
     .catch((err) => {
-      // eslint-disable-next-line no-constant-condition
-      if (err.name === 'CastError' || 'ValidationError') {
+      if (['CastError', 'ValidationError'].includes(err.name)) {
         return res.status(400).send({ message: 'Введите корректные данные' });
       }
       return res.status(500).send({ message: 'Ошибка сервера' });
