@@ -1,4 +1,4 @@
-const User = require("../models/user");
+const User = require('../models/user');
 
 const getUsers = (req, res) => {
   User.find({})
@@ -14,17 +14,12 @@ const getUsers = (req, res) => {
 
 const getUser = (req, res) => {
   User.findById(req.params.id)
-    .then((user) => {
-      if (!user) {
-        return res.status(404).send({ message: "Нет пользователя с таким id" });
-      }
-      return res.status(200).send(user);
-    })
+    .then((user) => res.send({ data: user }))
     .catch((err) => {
-      if (err.name === "CastError") {
-        res.status(400).send({ message: "Введён неправильный id" });
+      if (err.name === 'CastError') {
+        res.status(400).send({ message: 'Введён неправильный id' });
       } else {
-        res.status(500).send({ message: "Ошибка сервера" });
+        res.status(500).send({ message: 'Ошибка сервера' });
       }
     });
 };
@@ -34,38 +29,42 @@ const createUser = (req, res) => {
   User.create({ name, about, avatar })
     .then((user) => res.status(200).send(user))
     .catch((err) => {
-      if (err.name === "ValidationError") {
-        return res.status(400).send({ message: "Ошибка валидации" });
+      if (err.name === 'ValidationError') {
+        return res.status(400).send({ message: 'Ошибка валидации' });
       }
-      return res.status(500).send({ message: "Ошибка сервера" });
+      return res.status(500).send({ message: 'Ошибка сервера' });
     });
 };
 
 const updateProfile = (req, res) => {
-  const id = req.user._id;
-
-  User.findByIdAndUpdate(id, { name: req.body.name, about: req.body.about })
+  const { name, about } = req.body;
+  User.findByIdAndUpdate(
+    req.user._id,
+    { name, about },
+    { new: true, runValidators: true },
+  )
     .then((user) => res.status(200).send({ data: user }))
     .catch((err) => {
-      if (err.name === "ValidationError") {
-        return res.status(400).send({ message: "Введите корректные данные" });
+      if (err.name === 'ValidationError') {
+        return res.status(400).send({ message: 'Введите корректные данные' });
       }
-      return res.status(500).send({ message: "Произошла ошибка" });
+      return res.status(500).send({ message: 'Ошибка сервера' });
     });
 };
 
 const updateAvatar = (req, res) => {
-  const id = req.user._id;
-
-  User.findByIdAndUpdate(id, {
-    avatar: req.body.avatar,
-  })
+  const { avatar } = req.body;
+  User.findByIdAndUpdate(
+    req.user._id,
+    { avatar },
+    { new: true, runValidators: true },
+  )
     .then((user) => res.status(200).send({ data: user }))
     .catch((err) => {
-      if (err.name === "ValidationError") {
-        return res.status(400).send({ message: "Введите корректные данные" });
+      if (err.name === 'ValidationError') {
+        return res.status(400).send({ message: 'Введите корректные данные' });
       }
-      return res.status(500).send({ message: "Произошла ошибка" });
+      return res.status(500).send({ message: 'Ошибка сервера' });
     });
 };
 

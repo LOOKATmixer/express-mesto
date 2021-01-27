@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -20,9 +20,9 @@ const userSchema = new mongoose.Schema({
       validator(v) {
         return /^(https?:\/\/)([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)/g.test(v);
       },
-      message: "Введена некорректная ссылка :(",
+      message: 'Введена некорректная ссылка :(',
     },
   },
 });
 
-module.exports = mongoose.model("user", userSchema);
+module.exports = mongoose.model('user', userSchema);

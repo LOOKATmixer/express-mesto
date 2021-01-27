@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const cardSchema = new mongoose.Schema({
   name: {
@@ -15,7 +15,7 @@ const cardSchema = new mongoose.Schema({
         return /^(https?:\/\/)([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)/g.test(v);
       },
     },
-    message: "Введена некорректная ссылка :(",
+    message: 'Введена некорректная ссылка :(',
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
@@ -33,4 +33,4 @@ const cardSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("card", cardSchema);
+module.exports = mongoose.model('card', cardSchema);
