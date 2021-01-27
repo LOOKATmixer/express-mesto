@@ -14,13 +14,19 @@ const getUsers = (req, res) => {
 
 const getUser = (req, res) => {
   User.findById(req.params.id)
-    .then((user) => res.send({ data: user }))
+    .then((user) => {
+      if (user) {
+        return res.send({ data: user });
+      }
+      return res.status(404).send({ message: 'Введен не правильный id' });
+    })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Введён неправильный id' });
-      } else {
-        res.status(500).send({ message: 'Ошибка сервера' });
+        return res.status(400).send({
+          message: 'Введите корректные данные',
+        });
       }
+      return res.status(500).send({ message: 'Ошибка сервера' });
     });
 };
 
@@ -45,7 +51,8 @@ const updateProfile = (req, res) => {
   )
     .then((user) => res.status(200).send({ data: user }))
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      // eslint-disable-next-line no-constant-condition
+      if (err.name === 'CastError' || 'ValidationError') {
         return res.status(400).send({ message: 'Введите корректные данные' });
       }
       return res.status(500).send({ message: 'Ошибка сервера' });
